@@ -57,8 +57,10 @@ xiond q bank balances $(xiond keys show wallet -a --keyring-backend test) --node
 nano instruction.hex
 ```
 
-Paste the correct `0x...` **hex instruction** string from Union dashboard or manually constructed. Save with `Ctrl + O`, then exit with `Ctrl + X`.
+Paste the correct `0x...` **hex instruction** string from Union dashboard or manually constructed. Go to https://app.union.build/ and perform a Xion -> Sei transaction. Visit the block explorer and copy the instruction as show below (add `0x` in start):
 
+Save with `Ctrl + O`, then exit with `Ctrl + X`.
+![Preview](./image.png)
 ---
 
 ## 📜 Create the Script File
