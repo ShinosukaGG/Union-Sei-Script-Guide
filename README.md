@@ -157,6 +157,12 @@ chmod +x xion-to-sei.sh
 
 ## ✅ Useful Commands
 
+Add a different wallet:
+
+```bash
+xiond keys add wallet --recover --keyring-backend test
+```
+
 Check balance:
 
 ```bash
