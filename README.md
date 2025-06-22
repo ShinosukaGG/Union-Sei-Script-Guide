@@ -51,6 +51,15 @@ xiond q bank balances $(xiond keys show wallet -a --keyring-backend test) --node
 
 ---
 
+## 📜 Clone the Script
+
+```bash
+git clone https://github.com/ShinosukaGG/Union-Sei-Script-Guide.git
+cd Union-Sei-Script-Guide
+```
+
+---
+
 ## 🧾 Create IBC Instruction File
 
 ```bash
@@ -63,85 +72,10 @@ Save with `Ctrl + O`, then exit with `Ctrl + X`.
 ![Preview](./image_instruction.jpg)
 ---
 
-## 📜 Create the Script File
+## ✅ Make Script Executable and Run
 
 ```bash
-nano xion-to-sei.sh
-```
-
-Paste this:
-
-```bash
-#!/bin/bash
-
-# === CONFIG ===
-CHAIN_ID="xion-testnet-2"
-NODE="https://rpc.xion-testnet-2.burnt.com:443"
-SENDER="wallet"
-CONTRACT="xion1336jj8ertl8h7rdvnz4dh5rqahd09cy0x43guhsxx6xyrztx292qlzhdk9"
-AMOUNT="155uxion"
-FEES="700uxion"
-
-# === LOOP START ===
-while true; do
-  # Get sender address
-  ADDR=$(xiond keys show $SENDER -a --keyring-backend test)
-  
-  # Check balance
-  BAL=$(xiond q bank balances "$ADDR" --node $NODE -o json | jq -r '.balances[] | select(.denom=="uxion") | .amount')
-  if [[ -z "$BAL" || "$BAL" -lt "${AMOUNT%uxion}" ]]; then
-    echo "❌ Not enough balance. Current: ${BAL:-0} uxion"
-    sleep 10
-    continue
-  fi
-
-  # Generate salt and timeout
-  SALT="0x$(openssl rand -hex 32)"
-  NOW_NS=$(date +%s%N)
-  TIMEOUT_TS=$((NOW_NS + 600000000000))  # +10 minutes in ns
-
-  # Check instruction file
-  if [[ ! -f instruction.hex ]]; then
-    echo "❌ instruction.hex file not found!"
-    exit 1
-  fi
-
-  # Prepare instruction
-  RAW_HEX=$(tr -d '\n\r ' < instruction.hex)
-  INSTRUCTION_HEX="0x${RAW_HEX#0x}"
-
-  # Send transaction
-  echo "📤 Sending IBC transaction to Sei..."
-  xiond tx wasm execute $CONTRACT \
-    '{"send":{"channel_id":6,"timeout_height":"0","timeout_timestamp":"'"$TIMEOUT_TS"'","salt":"'"$SALT"'","instruction":"'"$INSTRUCTION_HEX"'"}}' \
-    --from $SENDER \
-    --amount $AMOUNT \
-    --gas auto \
-    --gas-adjustment 1.3 \
-    --fees $FEES \
-    --keyring-backend test \
-    --node $NODE \
-    --chain-id $CHAIN_ID \
-    -y
-
-  echo "✅ Tx sent. Next Tx in 10s..."
-  sleep 10
-done
-
-```
-
-Make it executable:
-
-```bash
-chmod +x xion-to-sei.sh
-```
-
----
-
-## 🚀 Run the Script
-
-```bash
-./xion-to-sei.sh
+chmod +x xion_to_sei.sh && ./xion_to_sei.sh
 ```
 
 ---
@@ -150,7 +84,6 @@ chmod +x xion-to-sei.sh
 
 - The `instruction.hex` file must contain a valid Union instruction (starting with `0x`).
 - Script uses `xion-testnet-2` and correct Union contract for sending from Xion to Sei.
-- You can edit `AMOUNT`, `FEES`, or `sleep` duration as needed.
 - Make sure the source wallet has enough `uxion` balance to cover multiple sends.
 
 ---
@@ -167,12 +100,6 @@ Check balance:
 
 ```bash
 xiond q bank balances $(xiond keys show wallet -a --keyring-backend test) --node https://rpc.xion-testnet-2.burnt.com:443
-```
-
-Reopen script for editing:
-
-```bash
-nano xion-to-sei.sh
 ```
 
 Reopen instruction:
