@@ -6,7 +6,7 @@ NODE="https://rpc.xion-testnet-2.burnt.com:443"
 SENDER="wallet"
 CONTRACT="xion1336jj8ertl8h7rdvnz4dh5rqahd09cy0x43guhsxx6xyrztx292qlzhdk9"
 AMOUNT="155uxion"
-FEES="700uxion"
+FEES="900uxion"
 
 # === LOOP START ===
 while true; do
